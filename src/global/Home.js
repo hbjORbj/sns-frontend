@@ -1,3 +1,10 @@
 import React, { Component } from "react";
 
-export const Home = () => <div>Home</div>;
+class Home extends Component {
+  state = {};
+  render() {
+    return <div>Home</div>;
+  }
+}
+
+export default Home;

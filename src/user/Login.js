@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { signup } from "./apiUser";
+import { login } from "./apiUser";
 
-class Signup extends Component {
+class Login extends Component {
   state = {
-    name: "",
     email: "",
     password: "",
     error: "",
@@ -17,33 +16,21 @@ class Signup extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const { name, email, password } = this.state;
+    const { email, password } = this.state;
     const user = {
-      name,
       email,
       password,
     };
-
-    signup(user).then((data) => {
+    login(user).then((data) => {
       if (data.error) this.setState({ error: data.error });
       else {
-        this.setState({ name: "", email: "", password: "", error: "" });
+        this.setState({ email: "", password: "" });
       }
     });
   };
 
-  signupForm = (name, email, password) => (
+  loginForm = (email, password) => (
     <form>
-      {/* Name */}
-      <div className="form-component">
-        <label>Name</label>
-        <input
-          onChange={this.handleChange("name")}
-          type="text"
-          value={name}
-        ></input>
-      </div>
-
       {/* Email */}
       <div className="form-component">
         <label>Email</label>
@@ -63,21 +50,20 @@ class Signup extends Component {
           value={password}
         ></input>
       </div>
-
-      <button onClick={this.handleSubmit}>Sign Up</button>
+      <button onClick={this.handleSubmit}>Login</button>
     </form>
   );
 
   render() {
-    const { name, email, password } = this.state;
+    const { email, password } = this.state;
     return (
       <div className="container">
-        <h2>Sign up</h2>
+        <h2>Login</h2>
         <hr />
-        {this.signupForm(name, email, password)}
+        {this.loginForm(email, password)}
       </div>
     );
   }
 }
 
-export default Signup;
+export default Login;
