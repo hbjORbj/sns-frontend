@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { isAuthenticated } from "../auth";
-import { getUser, logout } from "../user/apiUser";
+import { getJwt, logout } from "../user/apiUser";
 
 const isNavActive = (history, path) => {
   return history.location.pathname === path;
@@ -54,14 +54,14 @@ const Navigation = ({ history }) => {
             <li className="nav-item">
               <Link
                 className="nav-link"
-                to={`/user/${getUser()._id}`}
+                to={`/user/${getJwt().user._id}`}
                 style={{
-                  color: isNavActive(history, `/user/${getUser()._id}`)
+                  color: isNavActive(history, `/user/${getJwt().user._id}`)
                     ? "#fdcb6e"
                     : "#ffffff",
                 }}
               >
-                {`${getUser().name}'s Profile`}
+                {`${getJwt().user.name}'s Profile`}
               </Link>
             </li>
 
