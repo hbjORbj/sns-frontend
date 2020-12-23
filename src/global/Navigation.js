@@ -1,5 +1,7 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
+import { isAuthenticated } from "../auth";
+import { getUser, logout } from "../user/apiUser";
 
 const isNavActive = (history, path) => {
   return history.location.pathname === path;
@@ -18,28 +20,62 @@ const Navigation = ({ history }) => {
             Home
           </Link>
         </li>
-        <li className="nav-item">
-          <Link
-            className="nav-link"
-            to="/login"
-            style={{
-              color: isNavActive(history, "/login") ? "#fdcb6e" : "#ffffff",
-            }}
-          >
-            Log In
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link
-            className="nav-link"
-            to="/signup"
-            style={{
-              color: isNavActive(history, "/signup") ? "#fdcb6e" : "#ffffff",
-            }}
-          >
-            Sign Up
-          </Link>
-        </li>
+        {!isAuthenticated() && (
+          <>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to="/login"
+                style={{
+                  color: isNavActive(history, "/login") ? "#fdcb6e" : "#ffffff",
+                }}
+              >
+                Log In
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to="/signup"
+                style={{
+                  color: isNavActive(history, "/signup")
+                    ? "#fdcb6e"
+                    : "#ffffff",
+                }}
+              >
+                Sign Up
+              </Link>
+            </li>
+          </>
+        )}
+
+        {isAuthenticated() && (
+          <>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to={`/user/${getUser()._id}`}
+                style={{
+                  color: isNavActive(history, `/user/${getUser()._id}`)
+                    ? "#fdcb6e"
+                    : "#ffffff",
+                }}
+              >
+                {`${getUser().name}'s Profile`}
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <span
+                style={{ cursor: "pointer", color: "#fff" }}
+                className="nav-link"
+                onClick={() => logout(() => history.push("/"))}
+              >
+                Logout
+              </span>
+            </li>
+          </>
+        )}
       </ul>
     </div>
   );

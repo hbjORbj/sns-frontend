@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import { signup } from "./apiUser";
+import { authenticate } from "../auth";
+import { login, signup } from "./apiUser";
 
 class Signup extends Component {
   state = {
@@ -30,7 +31,15 @@ class Signup extends Component {
     signup(user).then((data) => {
       if (data.error) this.setState({ error: data.error });
       else {
-        this.setState({ redirect: true });
+        login(user).then((data) => {
+          if (data.error) this.setState({ error: data.error });
+          else {
+            // authenticate
+            authenticate(data, () => {
+              this.setState({ redirect: true });
+            });
+          }
+        });
       }
     });
   };
