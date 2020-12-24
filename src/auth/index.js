@@ -5,7 +5,7 @@ export const authenticate = (jwt, next) => {
   next();
 };
 
-export const isAuthenticated = () => {
+export const isUserLoggedIn = () => {
   if (typeof window == "undefined") {
     return false;
   }

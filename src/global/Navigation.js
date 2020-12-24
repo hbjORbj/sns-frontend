@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
-import { isAuthenticated } from "../auth";
+import { isUserLoggedIn } from "../auth";
 import { getJwt, logout } from "../user/apiUser";
 
 const isNavActive = (history, path) => {
@@ -20,7 +20,18 @@ const Navigation = ({ history }) => {
             Home
           </Link>
         </li>
-        {!isAuthenticated() && (
+        <li className="nav-item">
+          <Link
+            className="nav-link"
+            to="/users"
+            style={{
+              color: isNavActive(history, "/users") ? "#fdcb6e" : "#ffffff",
+            }}
+          >
+            Users
+          </Link>
+        </li>
+        {!isUserLoggedIn() && (
           <>
             <li className="nav-item">
               <Link
@@ -49,7 +60,7 @@ const Navigation = ({ history }) => {
           </>
         )}
 
-        {isAuthenticated() && (
+        {isUserLoggedIn() && (
           <>
             <li className="nav-item">
               <Link

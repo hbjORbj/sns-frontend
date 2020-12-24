@@ -44,6 +44,34 @@ export const getJwt = () => {
   }
 };
 
+export const follow = (userId, followedUserId, token) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/user/follow`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, followedUserId }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const unfollow = (userId, unfollowedUserId, token) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/user/unfollow`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, unfollowedUserId }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
 // Logged-in user with valid "token" is trying to get user with "userId"
 // User making such request is not necessarily the user with "userId"
 export const readUser = (userId, token) => {
@@ -54,6 +82,14 @@ export const readUser = (userId, token) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const listUsers = () => {
+  return fetch(`${process.env.REACT_APP_API_URL}/users`, {
+    method: "GET",
   })
     .then((response) => response.json())
     .catch((error) => console.log(error));
