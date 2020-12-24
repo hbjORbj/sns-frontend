@@ -1,7 +1,8 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { isUserLoggedIn } from "../auth";
 import { getJwt, readUser } from "./apiUser";
-import FollowProfileButton from "./FollowProfileButton";
+import DeleteUser from "./DeleteUser";
 
 class Profile extends Component {
   state = {
@@ -15,9 +16,8 @@ class Profile extends Component {
     error: "",
   };
 
-  componentDidMount() {
+  init(userId) {
     const token = isUserLoggedIn() ? getJwt().token : null;
-    const userId = this.props.match.params.userId;
     readUser(userId, token).then((data) => {
       if (data.error) this.setState({ error: data.error });
       else {
@@ -31,6 +31,16 @@ class Profile extends Component {
     });
   }
 
+  componentDidMount() {
+    const userId = this.props.match.params.userId;
+    this.init(userId);
+  }
+
+  componentDidUpdate(props) {
+    const userId = props.match.params.userId;
+    this.init(userId);
+  }
+
   render() {
     const { _id, name, email, created, error } = this.state;
     return (
@@ -38,6 +48,17 @@ class Profile extends Component {
         <h2 className="mt-5 mb-5">Profile</h2>
         <hr />
         <br />
+        <div className="row">
+          <div className="col-md-4">
+            <img
+              className="img-thumbnail"
+              alt={`${name}'s Profile Image`}
+              style={{ width: "auto", height: "250px" }}
+              src={`${process.env.REACT_APP_API_URL}/user/photo/${_id}`}
+            />
+          </div>
+        </div>
+
         <div
           className="alert alert-danger"
           style={{ display: error ? null : "none" }}
@@ -52,15 +73,24 @@ class Profile extends Component {
 
         {isUserLoggedIn() && getJwt().user && getJwt().user._id === _id ? (
           <div>
-            {/* <Link className="btn btn-raised btn-info mr-5" to="/">
+            <Link
+              className="btn btn-raised btn-info mr-5"
+              to="/"
+              style={{ width: "170px" }}
+            >
               Create Post
             </Link>
-            <Link className="btn btn-raised btn-success" to="/">
+            <Link
+              className="btn btn-raised btn-success mr-5"
+              to={`/user/edit/${_id}`}
+              style={{ width: "170px" }}
+            >
               Edit Profile
-            </Link> */}
+            </Link>
+            <DeleteUser userId={_id} />
           </div>
         ) : (
-          <FollowProfileButton></FollowProfileButton>
+          <button className="btn btn-raised btn-primary">Follow Button</button>
         )}
       </div>
     );

@@ -87,6 +87,19 @@ export const readUser = (userId, token) => {
     .catch((error) => console.log(error));
 };
 
+export const deleteUser = (userId, token) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
 export const listUsers = () => {
   return fetch(`${process.env.REACT_APP_API_URL}/users`, {
     method: "GET",
