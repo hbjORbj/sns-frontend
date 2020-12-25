@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getJwt, isUserLoggedIn } from "../auth";
 import { readUser } from "./apiUser";
 import DeleteUser from "./DeleteUser";
+import DefaultAvatar from "../images/avatar.jpg";
 
 class Profile extends Component {
   state = {
@@ -36,9 +37,11 @@ class Profile extends Component {
     this.init(userId);
   }
 
-  componentDidUpdate(props) {
-    const userId = props.match.params.userId;
-    this.init(userId);
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.userId !== prevProps.match.params.userId) {
+      const userId = this.props.match.params.userId;
+      this.init(userId);
+    }
   }
 
   render() {
@@ -50,12 +53,12 @@ class Profile extends Component {
         <br />
         <div className="row">
           <div className="col-md-4">
-            {/* <img
+            <img
               className="img-thumbnail"
               alt={`${name}'s Profile Image`}
               style={{ width: "auto", height: "250px" }}
-              src={`${process.env.REACT_APP_API_URL}/user/photo/${_id}`}
-            /> */}
+              src={DefaultAvatar}
+            />
           </div>
         </div>
 

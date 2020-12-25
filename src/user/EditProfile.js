@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, isValidElement } from "react";
 import { Redirect } from "react-router-dom";
 import { getJwt, isUserLoggedIn, updateJwt } from "../auth";
 import { readUser, updateUser } from "./apiUser";
@@ -15,6 +15,7 @@ class EditProfile extends Component {
   componentDidMount() {
     const token = isUserLoggedIn() ? getJwt().token : null;
     const userId = this.props.match.params.userId;
+
     readUser(userId, token).then((data) => {
       if (data.error) this.setState({ redirect: true });
       else {
@@ -35,7 +36,7 @@ class EditProfile extends Component {
     });
   };
 
-  handleSubmit = (event) => {
+  updateAccount = (event) => {
     event.preventDefault();
     const token = isUserLoggedIn() ? getJwt().token : null;
     const userId = this.props.match.params.userId;
@@ -56,6 +57,31 @@ class EditProfile extends Component {
         );
       }
     });
+  };
+
+  confirmUpdate = (event) => {
+    event.preventDefault();
+    if (this.isValid()) {
+      let answer = window.confirm(
+        "Are you sure you want to update your profile?"
+      );
+      if (answer) {
+        this.updateAccount(event);
+      }
+    }
+  };
+
+  isValid = () => {
+    const { name, email } = this.state;
+    if (name.length === 0) {
+      this.setState({ error: "Type your name." });
+      return false;
+    }
+    if (!/.+\@.+\..+/.test(email)) {
+      this.setState({ error: "Invalid email address." });
+      return false;
+    }
+    return true;
   };
 
   signupForm = (name, email) => (
@@ -84,7 +110,7 @@ class EditProfile extends Component {
 
       <button
         className="btn btn-raised btn-primary mt-3 mb-3"
-        onClick={this.handleSubmit}
+        onClick={this.confirmUpdate}
       >
         Update Profile
       </button>
@@ -92,7 +118,7 @@ class EditProfile extends Component {
   );
 
   render() {
-    const { _id, name, email, redirect } = this.state;
+    const { _id, name, email, redirect, error } = this.state;
     if (redirect) {
       return <Redirect to={`/user/${_id}`} />;
     }
@@ -101,6 +127,12 @@ class EditProfile extends Component {
         <h2 className="mt-5 mb-5">Edit Profile</h2>
         <hr />
         <br />
+        <div
+          className="alert alert-danger"
+          style={{ display: error ? "" : "none" }}
+        >
+          {error}
+        </div>
         {isUserLoggedIn() &&
           getJwt().user._id === _id &&
           this.signupForm(name, email)}
