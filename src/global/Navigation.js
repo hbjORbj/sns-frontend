@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
-import { isUserLoggedIn } from "../auth";
-import { getJwt, logout } from "../user/apiUser";
+import { getJwt, isUserLoggedIn } from "../auth";
+import { logout } from "../user/apiUser";
 
 const isNavActive = (history, path) => {
   return history.location.pathname === path;

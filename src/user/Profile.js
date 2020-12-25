@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { isUserLoggedIn } from "../auth";
-import { getJwt, readUser } from "./apiUser";
+import { getJwt, isUserLoggedIn } from "../auth";
+import { readUser } from "./apiUser";
 import DeleteUser from "./DeleteUser";
 
 class Profile extends Component {
@@ -50,12 +50,12 @@ class Profile extends Component {
         <br />
         <div className="row">
           <div className="col-md-4">
-            <img
+            {/* <img
               className="img-thumbnail"
               alt={`${name}'s Profile Image`}
               style={{ width: "auto", height: "250px" }}
               src={`${process.env.REACT_APP_API_URL}/user/photo/${_id}`}
-            />
+            /> */}
           </div>
         </div>
 

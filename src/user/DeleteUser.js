@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import { deleteUser, getJwt, logout } from "./apiUser";
+import { getJwt, isUserLoggedIn } from "../auth";
+import { deleteUser, logout } from "./apiUser";
 
 class DeleteUser extends Component {
   state = {
     redirect: false,
   };
   deleteAccount = () => {
-    const token = getJwt().token;
+    const token = isUserLoggedIn() ? getJwt().token : null;
     const userId = this.props.userId;
     deleteUser(userId, token).then((data) => {
       if (data.error) {

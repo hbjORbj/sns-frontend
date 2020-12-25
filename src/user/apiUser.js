@@ -36,14 +36,6 @@ export const logout = (next) => {
     .catch((error) => console.log(error));
 };
 
-export const getJwt = () => {
-  if (localStorage.getItem("jwt")) {
-    return JSON.parse(localStorage.getItem("jwt"));
-  } else {
-    return null;
-  }
-};
-
 export const follow = (userId, followedUserId, token) => {
   return fetch(`${process.env.REACT_APP_API_URL}/user/follow`, {
     method: "PUT",
@@ -82,6 +74,20 @@ export const readUser = (userId, token) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const updateUser = (userId, token, user) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(user),
   })
     .then((response) => response.json())
     .catch((error) => console.log(error));
