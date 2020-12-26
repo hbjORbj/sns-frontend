@@ -8,7 +8,9 @@ class EditProfile extends Component {
     _id: "",
     name: "",
     email: "",
+    fileSize: 0,
     redirect: false,
+    loading: true,
     error: "",
   };
 
@@ -25,6 +27,7 @@ class EditProfile extends Component {
           name: data.name,
           email: data.email,
           error: "",
+          loading: false,
         });
       }
     });
@@ -32,10 +35,12 @@ class EditProfile extends Component {
 
   handleChange = (name) => (event) => {
     const value = name === "photo" ? event.target.files[0] : event.target.value;
+    const fileSize = name === "photo" ? event.target.files[0].size : 0;
     this.userData.set(name, value);
     this.setState({
       error: "",
       [name]: value,
+      fileSize,
     });
   };
 
@@ -69,7 +74,13 @@ class EditProfile extends Component {
   };
 
   isValid = () => {
-    const { name, email } = this.state;
+    const { name, email, fileSize } = this.state;
+    if (fileSize > 1000000) {
+      this.setState({
+        error: "File size should be less than 1 MB",
+      });
+      return false;
+    }
     if (name.length === 0) {
       this.setState({ error: "Type your name." });
       return false;
@@ -126,7 +137,7 @@ class EditProfile extends Component {
   );
 
   render() {
-    const { _id, name, email, redirect, error } = this.state;
+    const { _id, name, email, redirect, error, loading } = this.state;
     if (redirect) {
       return <Redirect to={`/user/${_id}`} />;
     }
@@ -141,9 +152,17 @@ class EditProfile extends Component {
         >
           {error}
         </div>
-        {isUserLoggedIn() &&
-          getJwt().user._id === _id &&
-          this.updateForm(name, email)}
+        {loading ? (
+          <div className="jumbotron">
+            <h2 className="text-center">Loading...</h2>
+          </div>
+        ) : (
+          <div>
+            {isUserLoggedIn() &&
+              getJwt().user._id === _id &&
+              this.updateForm(name, email)}
+          </div>
+        )}
       </div>
     );
   }

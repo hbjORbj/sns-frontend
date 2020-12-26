@@ -100,6 +100,7 @@ export const deleteUser = (userId, token) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    body: JSON.stringify({ userId }),
   })
     .then((response) => response.json())
     .catch((error) => console.log(error));
@@ -108,6 +109,34 @@ export const deleteUser = (userId, token) => {
 export const listUsers = () => {
   return fetch(`${process.env.REACT_APP_API_URL}/users`, {
     method: "GET",
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const followUser = (userId, targetId, token) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/user/follow`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, targetId }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const unfollowUser = (userId, targetId, token) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/user/unfollow`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, targetId }),
   })
     .then((response) => response.json())
     .catch((error) => console.log(error));

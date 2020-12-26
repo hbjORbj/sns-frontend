@@ -4,6 +4,7 @@ import { getJwt, isUserLoggedIn } from "../auth";
 import { readUser } from "./apiUser";
 import DeleteUser from "./DeleteUser";
 import DefaultAvatar from "../images/avatar.jpg";
+import FollowButton from "./FollowButton";
 
 class Profile extends Component {
   state = {
@@ -14,7 +15,30 @@ class Profile extends Component {
     following: [],
     followers: [],
     posts: [],
+    amIFollowing: false,
     loading: true,
+  };
+
+  checkFollow = () => {
+    const { followers } = this.state;
+    let match = followers.find(
+      (follower) => follower._id === getJwt().user._id
+    );
+    return match !== undefined;
+  };
+
+  handleFollowButton = (api) => {
+    const jwt = getJwt();
+    api(jwt.user._id, this.state._id, jwt.token).then((data) => {
+      if (data.error) this.setState({ error: data.error });
+      else {
+        this.setState({
+          amIFollowing: !this.state.amIFollowing,
+          followers: data.followers,
+          following: data.following,
+        });
+      }
+    });
   };
 
   init(userId) {
@@ -27,8 +51,12 @@ class Profile extends Component {
           name: data.name,
           email: data.email,
           created: data.created,
+          following: data.following,
+          followers: data.followers,
+          posts: data.posts,
           loading: false,
         });
+        this.setState({ amIFollowing: this.checkFollow() });
       }
     });
   }
@@ -40,13 +68,23 @@ class Profile extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.match.params.userId !== prevProps.match.params.userId) {
+      this.setState({ loading: true });
       const userId = this.props.match.params.userId;
       this.init(userId);
     }
   }
 
   render() {
-    const { _id, name, email, created, loading } = this.state;
+    const {
+      _id,
+      name,
+      email,
+      created,
+      loading,
+      amIFollowing,
+      following,
+      followers,
+    } = this.state;
     const photoUrl = `${process.env.REACT_APP_API_URL}/user/photo/${_id}`;
     return (
       <div className="container">
@@ -98,9 +136,10 @@ class Profile extends Component {
                 </div>
               ) : (
                 <div className="mt-5 mb-5">
-                  <button className="btn btn-raised btn-primary">
-                    Follow Button
-                  </button>
+                  <FollowButton
+                    amIFollowing={amIFollowing}
+                    onButtonClick={this.handleFollowButton}
+                  />
                 </div>
               )}
             </div>
