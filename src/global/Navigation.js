@@ -31,6 +31,7 @@ const Navigation = ({ history }) => {
             Users
           </Link>
         </li>
+
         {!isUserLoggedIn() && (
           <>
             <li className="nav-item">
@@ -62,6 +63,20 @@ const Navigation = ({ history }) => {
 
         {isUserLoggedIn() && (
           <>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to="/findpeople"
+                style={{
+                  color: isNavActive(history, "/findpeople")
+                    ? "#fdcb6e"
+                    : "#ffffff",
+                }}
+              >
+                Find People
+              </Link>
+            </li>
+
             <li className="nav-item">
               <Link
                 className="nav-link"
