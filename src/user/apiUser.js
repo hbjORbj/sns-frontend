@@ -84,10 +84,9 @@ export const updateUser = (userId, token, user) => {
     method: "PUT",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(user),
+    body: user,
   })
     .then((response) => response.json())
     .catch((error) => console.log(error));

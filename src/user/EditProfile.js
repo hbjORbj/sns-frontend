@@ -13,6 +13,7 @@ class EditProfile extends Component {
   };
 
   componentDidMount() {
+    this.userData = new FormData();
     const token = isUserLoggedIn() ? getJwt().token : null;
     const userId = this.props.match.params.userId;
 
@@ -30,9 +31,11 @@ class EditProfile extends Component {
   }
 
   handleChange = (name) => (event) => {
+    const value = name === "photo" ? event.target.files[0] : event.target.value;
+    this.userData.set(name, value);
     this.setState({
       error: "",
-      [name]: event.target.value,
+      [name]: value,
     });
   };
 
@@ -40,13 +43,7 @@ class EditProfile extends Component {
     event.preventDefault();
     const token = isUserLoggedIn() ? getJwt().token : null;
     const userId = this.props.match.params.userId;
-    const { _id, name, email } = this.state;
-    const user = {
-      _id,
-      name,
-      email,
-    };
-    updateUser(userId, token, user).then((data) => {
+    updateUser(userId, token, this.userData).then((data) => {
       if (data.error) {
         this.setState({ error: data.error });
       } else {
@@ -84,8 +81,19 @@ class EditProfile extends Component {
     return true;
   };
 
-  signupForm = (name, email) => (
+  updateForm = (name, email) => (
     <form>
+      {/* Profile Image */}
+      <div className="form-group">
+        <label className="text-muted">Profile Image</label>
+        <input
+          onChange={this.handleChange("photo")}
+          type="file"
+          accept="image/*"
+          className="form-control"
+        ></input>
+      </div>
+
       {/* Name */}
       <div className="form-group">
         <label className="text-muted">Name</label>
@@ -135,7 +143,7 @@ class EditProfile extends Component {
         </div>
         {isUserLoggedIn() &&
           getJwt().user._id === _id &&
-          this.signupForm(name, email)}
+          this.updateForm(name, email)}
       </div>
     );
   }

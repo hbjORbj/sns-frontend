@@ -14,7 +14,7 @@ class Profile extends Component {
     following: [],
     followers: [],
     posts: [],
-    error: "",
+    loading: true,
   };
 
   init(userId) {
@@ -27,6 +27,7 @@ class Profile extends Component {
           name: data.name,
           email: data.email,
           created: data.created,
+          loading: false,
         });
       }
     });
@@ -45,55 +46,65 @@ class Profile extends Component {
   }
 
   render() {
-    const { _id, name, email, created, error } = this.state;
+    const { _id, name, email, created, loading } = this.state;
+    const photoUrl = `${process.env.REACT_APP_API_URL}/user/photo/${_id}`;
     return (
       <div className="container">
         <h2 className="mt-5 mb-5">Profile</h2>
         <hr />
         <br />
-        <div className="row">
-          <div className="col-md-4">
-            <img
-              className="img-thumbnail"
-              alt={`${name}'s Profile Image`}
-              style={{ width: "auto", height: "250px" }}
-              src={DefaultAvatar}
-            />
-          </div>
-        </div>
 
-        <div
-          className="alert alert-danger"
-          style={{ display: error ? null : "none" }}
-        >
-          {error}
-        </div>
-        <div className="lead">
-          <p>Hello, {name}</p>
-          <p>Email: {email}</p>
-          <p>{`Joined on ${new Date(created).toDateString()}`}</p>
-        </div>
-
-        {isUserLoggedIn() && getJwt().user && getJwt().user._id === _id ? (
-          <div>
-            <Link
-              className="btn btn-raised btn-info mr-5"
-              to="/"
-              style={{ width: "170px" }}
-            >
-              Create Post
-            </Link>
-            <Link
-              className="btn btn-raised btn-success mr-5"
-              to={`/user/edit/${_id}`}
-              style={{ width: "170px" }}
-            >
-              Edit Profile
-            </Link>
-            <DeleteUser userId={_id} />
+        {loading ? (
+          <div className="jumbotron">
+            <h2 className="text-center">Loading...</h2>
           </div>
         ) : (
-          <button className="btn btn-raised btn-primary">Follow Button</button>
+          <div className="row">
+            <div className="col-md-4">
+              <img
+                className="img-thumbnail"
+                alt={`${name}'s Profile Image`}
+                style={{ width: "auto", height: "250px" }}
+                src={photoUrl}
+                onError={(i) => (i.target.src = `${DefaultAvatar}`)}
+              />
+            </div>
+            <div className="col-md-8">
+              <div className="lead mt-3">
+                <p>Hello, {name}</p>
+                <p>Email: {email}</p>
+                <p>{`Joined on ${new Date(created).toDateString()}`}</p>
+              </div>
+
+              {isUserLoggedIn() &&
+              getJwt().user &&
+              getJwt().user._id === _id ? (
+                <div className="mt-5 mb-5">
+                  <Link
+                    className="btn btn-raised btn-info mr-5"
+                    to="/"
+                    style={{ width: "170px" }}
+                  >
+                    Create Post
+                  </Link>
+                  <Link
+                    className="btn btn-raised btn-success mr-5"
+                    to={`/user/edit/${_id}`}
+                    style={{ width: "170px" }}
+                  >
+                    Edit Profile
+                  </Link>
+                  <DeleteUser userId={_id} />
+                </div>
+              ) : (
+                <div className="mt-5 mb-5">
+                  <button className="btn btn-raised btn-primary">
+                    Follow Button
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </div>
     );
