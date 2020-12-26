@@ -8,6 +8,7 @@ class EditProfile extends Component {
     _id: "",
     name: "",
     email: "",
+    about: "",
     fileSize: 0,
     redirect: false,
     loading: true,
@@ -26,6 +27,7 @@ class EditProfile extends Component {
           _id: data._id,
           name: data.name,
           email: data.email,
+          about: data.about,
           error: "",
           loading: false,
         });
@@ -92,7 +94,7 @@ class EditProfile extends Component {
     return true;
   };
 
-  updateForm = (name, email) => (
+  updateForm = (name, email, about) => (
     <form>
       {/* Profile Image */}
       <div className="form-group">
@@ -127,6 +129,17 @@ class EditProfile extends Component {
         ></input>
       </div>
 
+      {/* About */}
+      <div className="form-group">
+        <label className="text-muted">About</label>
+        <input
+          onChange={this.handleChange("about")}
+          type="text"
+          value={about}
+          className="form-control"
+        ></input>
+      </div>
+
       <button
         className="btn btn-raised btn-primary mt-3 mb-3"
         onClick={this.confirmUpdate}
@@ -137,7 +150,7 @@ class EditProfile extends Component {
   );
 
   render() {
-    const { _id, name, email, redirect, error, loading } = this.state;
+    const { _id, name, email, redirect, error, about, loading } = this.state;
     if (redirect) {
       return <Redirect to={`/user/${_id}`} />;
     }
@@ -160,7 +173,7 @@ class EditProfile extends Component {
           <div>
             {isUserLoggedIn() &&
               getJwt().user._id === _id &&
-              this.updateForm(name, email)}
+              this.updateForm(name, email, about)}
           </div>
         )}
       </div>

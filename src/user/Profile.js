@@ -5,6 +5,7 @@ import { readUser } from "./apiUser";
 import DeleteUser from "./DeleteUser";
 import DefaultAvatar from "../images/avatar.jpg";
 import FollowButton from "./FollowButton";
+import ProfileTabs from "./ProfileTabs";
 
 class Profile extends Component {
   state = {
@@ -16,6 +17,7 @@ class Profile extends Component {
     followers: [],
     posts: [],
     amIFollowing: false,
+    about: "",
     loading: true,
   };
 
@@ -53,7 +55,8 @@ class Profile extends Component {
           created: data.created,
           following: data.following,
           followers: data.followers,
-          posts: data.posts,
+          posts: data.posts || [],
+          about: data.about,
           loading: false,
         });
         this.setState({ amIFollowing: this.checkFollow() });
@@ -80,7 +83,9 @@ class Profile extends Component {
       name,
       email,
       created,
+      about,
       loading,
+      posts,
       amIFollowing,
       following,
       followers,
@@ -97,52 +102,66 @@ class Profile extends Component {
             <h2 className="text-center">Loading...</h2>
           </div>
         ) : (
-          <div className="row">
-            <div className="col-md-4">
-              <img
-                className="img-thumbnail"
-                alt={`${name}'s Profile Image`}
-                style={{ width: "auto", height: "250px" }}
-                src={photoUrl}
-                onError={(i) => (i.target.src = `${DefaultAvatar}`)}
-              />
-            </div>
-            <div className="col-md-8">
-              <div className="lead mt-3">
-                <p>Hello, {name}</p>
-                <p>Email: {email}</p>
-                <p>{`Joined on ${new Date(created).toDateString()}`}</p>
+          <div>
+            <div className="row">
+              <div className="col-md-4">
+                <img
+                  className="img-thumbnail"
+                  alt={`${name}'s Profile Image`}
+                  style={{ width: "auto", height: "250px" }}
+                  src={photoUrl}
+                  onError={(i) => (i.target.src = `${DefaultAvatar}`)}
+                />
               </div>
+              <div className="col-md-8">
+                <div className="lead mt-3">
+                  <p>Hello, {name}</p>
+                  <p>Email: {email}</p>
+                  <p>{`Joined on ${new Date(created).toDateString()}`}</p>
+                </div>
 
-              {isUserLoggedIn() &&
-              getJwt().user &&
-              getJwt().user._id === _id ? (
-                <div className="mt-5 mb-5">
-                  <Link
-                    className="btn btn-raised btn-info mr-5"
-                    to="/"
-                    style={{ width: "170px" }}
-                  >
-                    Create Post
-                  </Link>
-                  <Link
-                    className="btn btn-raised btn-success mr-5"
-                    to={`/user/edit/${_id}`}
-                    style={{ width: "170px" }}
-                  >
-                    Edit Profile
-                  </Link>
-                  <DeleteUser userId={_id} />
-                </div>
-              ) : (
-                <div className="mt-5 mb-5">
-                  <FollowButton
-                    amIFollowing={amIFollowing}
-                    onButtonClick={this.handleFollowButton}
-                  />
-                </div>
-              )}
+                {isUserLoggedIn() &&
+                getJwt().user &&
+                getJwt().user._id === _id ? (
+                  <div className="mt-5 mb-5">
+                    <Link
+                      className="btn btn-raised btn-info mr-5"
+                      to="/"
+                      style={{ width: "170px" }}
+                    >
+                      Create Post
+                    </Link>
+                    <Link
+                      className="btn btn-raised btn-success mr-5"
+                      to={`/user/edit/${_id}`}
+                      style={{ width: "170px" }}
+                    >
+                      Edit Profile
+                    </Link>
+                    <DeleteUser userId={_id} />
+                  </div>
+                ) : (
+                  <div className="mt-5 mb-5">
+                    <FollowButton
+                      amIFollowing={amIFollowing}
+                      onButtonClick={this.handleFollowButton}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
+            <div className="row">
+              <div className="col-md-12">
+                <hr />
+                <p className="lead">{about}</p>
+                <hr />
+              </div>
+            </div>
+            <ProfileTabs
+              followers={followers}
+              following={following}
+              posts={posts}
+            />
           </div>
         )}
       </div>
