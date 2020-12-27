@@ -1,23 +1,36 @@
-import React, { Component, isValidElement } from "react";
+import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { getJwt } from "../auth";
-import { createPost } from "./apiPost";
+import { getPost, updatePost } from "./apiPost";
 
-class NewPost extends Component {
+class EditPost extends Component {
   state = {
     title: "",
     body: "",
     photo: "",
     error: "",
-    fileSize: 0,
     loading: true,
-    redirect: false,
+    fileSize: 0,
     postId: "",
+    redirect: false,
   };
 
   componentDidMount() {
     this.postData = new FormData();
-    this.setState({ loading: false });
+    const postId = this.props.match.params.postId;
+    this.setState({ postId });
+    getPost(postId).then((data) => {
+      if (data.error) this.setState({ error: data.error });
+      else {
+        this.setState({
+          title: data.title,
+          body: data.body,
+          photo: data.photo,
+        });
+
+        this.setState({ loading: false });
+      }
+    });
   }
 
   handleChange = (name) => (event) => {
@@ -38,11 +51,10 @@ class NewPost extends Component {
     event.preventDefault();
     if (this.isValid()) {
       const jwt = getJwt();
-      createPost(jwt.user._id, jwt.token, this.postData).then((data) => {
+      updatePost(this.state.postId, jwt.token, this.postData).then((data) => {
         if (data.error) this.setState({ error: data.error });
         else {
           this.setState({
-            postId: data._id,
             redirect: true,
           });
         }
@@ -51,7 +63,7 @@ class NewPost extends Component {
   };
 
   isValid = () => {
-    const { title, body, fileSize } = this.state;
+    const { fileSize, title, body } = this.state;
     if (fileSize > 1000000) {
       this.setState({ error: "File size should be less than 1 MB." });
       return false;
@@ -103,20 +115,20 @@ class NewPost extends Component {
         onClick={this.handleSubmit}
         className="btn btn-raised btn-primary mt-3 mb-3"
       >
-        Create Post
+        Update Post
       </button>
     </form>
   );
 
   render() {
-    const { title, body, postId, error, loading, redirect } = this.state;
+    const { title, body, error, loading, postId, redirect } = this.state;
     if (redirect) {
       return <Redirect to={`/post/${postId}`} />;
     }
 
     return (
       <div className="container">
-        <h2 className="mt-5 mb-5">Create a New Post</h2>
+        <h2 className="mt-5 mb-5">Update Post</h2>
         <hr />
         <br />
         <div
@@ -137,4 +149,4 @@ class NewPost extends Component {
   }
 }
 
-export default NewPost;
+export default EditPost;
