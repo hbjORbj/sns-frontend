@@ -37,7 +37,11 @@ class FindPeople extends Component {
         ) : (
           <div className="row">
             {users.map((user, i) => (
-              <div key={i} className="card col-md-3 m-3">
+              <div
+                key={i}
+                className="card col-md-2.75 m-3"
+                style={{ width: "200px" }}
+              >
                 <img
                   className="card-img-top"
                   alt={`${user.name}'s Profile Image`}

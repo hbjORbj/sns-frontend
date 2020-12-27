@@ -36,8 +36,14 @@ class EditProfile extends Component {
   }
 
   handleChange = (name) => (event) => {
-    const value = name === "photo" ? event.target.files[0] : event.target.value;
-    const fileSize = name === "photo" ? event.target.files[0].size : 0;
+    const value =
+      name === "photo" && event.target.files.length > 0
+        ? event.target.files[0]
+        : event.target.value;
+    const fileSize =
+      name === "photo" && event.target.files.length > 0
+        ? event.target.files[0].size
+        : 0;
     this.userData.set(name, value);
     this.setState({
       error: "",
@@ -46,7 +52,7 @@ class EditProfile extends Component {
     });
   };
 
-  updateAccount = (event) => {
+  handleSubmit = (event) => {
     event.preventDefault();
     const token = isUserLoggedIn() ? getJwt().token : null;
     const userId = this.props.match.params.userId;
@@ -70,16 +76,16 @@ class EditProfile extends Component {
         "Are you sure you want to update your profile?"
       );
       if (answer) {
-        this.updateAccount(event);
+        this.handleSubmit(event);
       }
     }
   };
 
   isValid = () => {
     const { name, email, fileSize } = this.state;
-    if (fileSize > 1000000) {
+    if (fileSize > 100000) {
       this.setState({
-        error: "File size should be less than 1 MB",
+        error: "File size should be less than 100 KB.",
       });
       return false;
     }

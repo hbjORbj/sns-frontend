@@ -6,6 +6,7 @@ import DeleteUser from "./DeleteUser";
 import DefaultAvatar from "../images/avatar.jpg";
 import FollowButton from "./FollowButton";
 import ProfileTabs from "./ProfileTabs";
+import { getPostsByUser } from "../post/apiPost";
 
 class Profile extends Component {
   state = {
@@ -43,11 +44,22 @@ class Profile extends Component {
     });
   };
 
+  loadPosts = async (userId) => {
+    const token = getJwt().token;
+    await getPostsByUser(userId, token).then((data) => {
+      if (data.error) this.setState({ error: data.error });
+      else {
+        this.setState({ posts: data });
+      }
+    });
+  };
+
   init(userId) {
     const token = isUserLoggedIn() ? getJwt().token : null;
     readUser(userId, token).then((data) => {
       if (data.error) this.setState({ error: data.error });
       else {
+        this.loadPosts(userId);
         this.setState({
           _id: data._id,
           name: data.name,
@@ -55,7 +67,6 @@ class Profile extends Component {
           created: data.created,
           following: data.following,
           followers: data.followers,
-          posts: data.posts || [],
           about: data.about,
           loading: false,
         });
@@ -126,7 +137,7 @@ class Profile extends Component {
                   <div className="mt-5 mb-5">
                     <Link
                       className="btn btn-raised btn-info mr-5"
-                      to="/"
+                      to={`/post/new/${_id}`}
                       style={{ width: "170px" }}
                     >
                       Create Post
