@@ -44,9 +44,9 @@ class Profile extends Component {
     });
   };
 
-  loadPosts = async (userId) => {
+  loadPosts = (userId) => {
     const token = getJwt().token;
-    await getPostsByUser(userId, token).then((data) => {
+    getPostsByUser(userId, token).then((data) => {
       if (data.error) this.setState({ error: data.error });
       else {
         this.setState({ posts: data });
@@ -59,7 +59,6 @@ class Profile extends Component {
     readUser(userId, token).then((data) => {
       if (data.error) this.setState({ error: data.error });
       else {
-        this.loadPosts(userId);
         this.setState({
           _id: data._id,
           name: data.name,
@@ -77,6 +76,7 @@ class Profile extends Component {
 
   componentDidMount() {
     const userId = this.props.match.params.userId;
+    this.loadPosts(userId);
     this.init(userId);
   }
 

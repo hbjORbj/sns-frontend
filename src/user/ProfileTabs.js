@@ -14,9 +14,9 @@ class ProfileTabs extends Component {
             <hr />
             {followers.map((user, i) => (
               <div key={i}>
-                <Link to={`/users/${user._id}`}>
+                <Link to={`/user/${user._id}`}>
                   <img
-                    src={`${process.env.REACT_APP_API_URL}/user/photo/${user.id}`}
+                    src={`${process.env.REACT_APP_API_URL}/user/photo/${user._id}`}
                     alt={user.name}
                     onError={(i) => (i.target.src = `${DefaultAvatar}`)}
                     style={{
@@ -41,9 +41,9 @@ class ProfileTabs extends Component {
             <hr />
             {following.map((user, i) => (
               <div key={i}>
-                <Link to={`/users/${user._id}`}>
+                <Link to={`/user/${user._id}`}>
                   <img
-                    src={`${process.env.REACT_APP_API_URL}/user/photo/${user.id}`}
+                    src={`${process.env.REACT_APP_API_URL}/user/photo/${user._id}`}
                     alt={user.name}
                     onError={(i) => (i.target.src = `${DefaultAvatar}`)}
                     style={{

@@ -80,6 +80,20 @@ const Navigation = ({ history }) => {
             <li className="nav-item">
               <Link
                 className="nav-link"
+                to={`/post/new/${getJwt().user._id}`}
+                style={{
+                  color: isNavActive(history, `/post/new/${getJwt().user._id}`)
+                    ? "#fdcb6e"
+                    : "#ffffff",
+                }}
+              >
+                Create Post
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link
+                className="nav-link"
                 to={`/user/${getJwt().user._id}`}
                 style={{
                   color: isNavActive(history, `/user/${getJwt().user._id}`)
