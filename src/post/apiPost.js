@@ -56,3 +56,31 @@ export const deletePost = (postId, token) => {
     .then((response) => response.json())
     .catch((error) => console.log(error));
 };
+
+export const followPost = (userId, postId, token) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/post/like`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, postId }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const unfollowPost = (userId, postId, token) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/post/unlike`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, postId }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};

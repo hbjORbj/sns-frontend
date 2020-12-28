@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { getJwt } from "../auth";
 import { followUser, unfollowUser } from "./apiUser";
 
 class FollowButton extends Component {

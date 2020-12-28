@@ -2,13 +2,36 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { getJwt } from "../auth";
 import { deletePost, getPost } from "./apiPost";
+import LikeButton from "./LikeButton";
 
 class SinglePost extends Component {
   state = {
     post: "",
     error: "",
+    likes: "",
+    amILiking: false,
     loading: true,
     redirect: false,
+  };
+
+  checkLike = () => {
+    const { likes } = this.state;
+    let match = likes.find((user) => user._id === getJwt().user._id);
+    return match !== undefined;
+  };
+
+  handleLikeButton = (api) => {
+    const jwt = getJwt();
+    const postId = this.props.match.params.postId;
+    api(jwt.user._id, postId, jwt.token).then((data) => {
+      if (data.error) this.setState({ error: data.error });
+      else {
+        this.setState({
+          amILiking: !this.state.amILiking,
+          likes: data.likes,
+        });
+      }
+    });
   };
 
   componentDidMount() {
@@ -16,11 +39,18 @@ class SinglePost extends Component {
     getPost(postId).then((data) => {
       if (data.error) this.setState({ error: data.error });
       else {
-        this.setState({ post: data });
-        this.setState({ loading: false });
+        this.setState({
+          post: data,
+          likes: data.likes,
+          loading: false,
+        });
+        this.setState({
+          amILiking: this.checkLike(),
+        });
       }
     });
   }
+
   deletePost = () => {
     const token = getJwt().token;
     const postId = this.props.match.params.postId;
@@ -43,6 +73,8 @@ class SinglePost extends Component {
     const {
       post: { _id, title, body, created, postedBy },
       loading,
+      amILiking,
+      likes,
       redirect,
     } = this.state;
 
@@ -76,6 +108,14 @@ class SinglePost extends Component {
               on {new Date(created).toDateString()}
             </p>
             <div>
+              <div>
+                <LikeButton
+                  likes={likes}
+                  amILiking={amILiking}
+                  onButtonClick={this.handleLikeButton}
+                />
+              </div>
+
               <Link
                 to="/"
                 className="btn btn-raised btn-primary btn-sm mr-3"
