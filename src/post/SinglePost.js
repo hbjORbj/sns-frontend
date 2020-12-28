@@ -11,27 +11,33 @@ class SinglePost extends Component {
     likes: "",
     amILiking: false,
     loading: true,
-    redirect: false,
+    redirectToHome: false,
+    redirectToLogin: false,
+    redirectToProfile: false,
   };
 
   checkLike = () => {
     const { likes } = this.state;
-    let match = likes.find((user) => user._id === getJwt().user._id);
+    const userId = getJwt() ? getJwt().user._id : "";
+    let match = likes.find((user) => user._id === userId);
     return match !== undefined;
   };
 
   handleLikeButton = (api) => {
-    const jwt = getJwt();
-    const postId = this.props.match.params.postId;
-    api(jwt.user._id, postId, jwt.token).then((data) => {
-      if (data.error) this.setState({ error: data.error });
-      else {
-        this.setState({
-          amILiking: !this.state.amILiking,
-          likes: data.likes,
-        });
-      }
-    });
+    if (!getJwt()) this.setState({ redirectToLogin: true });
+    else {
+      const jwt = getJwt();
+      const postId = this.props.match.params.postId;
+      api(jwt.user._id, postId, jwt.token).then((data) => {
+        if (data.error) this.setState({ error: data.error });
+        else {
+          this.setState({
+            amILiking: !this.state.amILiking,
+            likes: data.likes,
+          });
+        }
+      });
+    }
   };
 
   componentDidMount() {
@@ -57,7 +63,7 @@ class SinglePost extends Component {
     deletePost(postId, token).then((data) => {
       if (data.error) console.log(data.error);
       else {
-        this.setState({ redirect: true });
+        this.setState({ redirectToProfile: true });
       }
     });
   };
@@ -71,18 +77,28 @@ class SinglePost extends Component {
 
   render() {
     const {
-      post: { _id, title, body, created, postedBy },
+      post: { _id, title, body, created, postedBy, photo },
       loading,
       amILiking,
       likes,
-      redirect,
+      redirectToHome,
+      redirectToLogin,
+      redirectToProfile,
     } = this.state;
 
-    if (redirect) {
+    if (redirectToHome) {
       return <Redirect to="/" />;
     }
+    if (redirectToLogin) {
+      return <Redirect to="/login" />;
+    }
+    if (redirectToProfile) {
+      return <Redirect to={`/user/${getJwt().user._id}`} />;
+    }
+
     const posterId = postedBy ? postedBy._id : "";
     const posterName = postedBy ? postedBy.name : "";
+    const photoUrl = `${process.env.REACT_APP_API_URL}/post/photo/${_id}`;
     return (
       <div className="container">
         <h2 className="mt-5 mb-5">{title}</h2>
@@ -94,13 +110,15 @@ class SinglePost extends Component {
           </div>
         ) : (
           <div className="card-body">
-            <img
-              src={`${process.env.REACT_APP_API_URL}/post/photo/${_id}`}
-              alt={`${title}'s image`}
-              onError={(i) => (i.target.src = "")}
-              className="img-thumbnail mb-5"
-              style={{ width: "50%", height: "300px" }}
-            />
+            <div style={{ display: photo ? "" : "none" }}>
+              <img
+                src={photoUrl}
+                alt={`${title}'s image`}
+                className="img-thumbnail mb-5"
+                style={{ width: "50%", height: "300px" }}
+              />
+            </div>
+
             <p className="card-text">{body}</p>
             <br />
             <p className="font-italic mark">
