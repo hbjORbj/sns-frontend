@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { followPost, unfollowPost } from "./apiPost";
+import { likePost, unlikePost } from "./apiPost";
 
 class LikeButton extends Component {
   handleLike = () => {
-    this.props.onButtonClick(followPost);
+    this.props.onButtonClick(likePost);
   };
 
   handleUnlike = () => {
-    this.props.onButtonClick(unfollowPost);
+    this.props.onButtonClick(unlikePost);
   };
 
   render() {

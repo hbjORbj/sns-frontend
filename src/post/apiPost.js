@@ -57,7 +57,7 @@ export const deletePost = (postId, token) => {
     .catch((error) => console.log(error));
 };
 
-export const followPost = (userId, postId, token) => {
+export const likePost = (userId, postId, token) => {
   return fetch(`${process.env.REACT_APP_API_URL}/post/like`, {
     method: "PUT",
     headers: {
@@ -71,7 +71,7 @@ export const followPost = (userId, postId, token) => {
     .catch((error) => console.log(error));
 };
 
-export const unfollowPost = (userId, postId, token) => {
+export const unlikePost = (userId, postId, token) => {
   return fetch(`${process.env.REACT_APP_API_URL}/post/unlike`, {
     method: "PUT",
     headers: {
@@ -80,6 +80,34 @@ export const unfollowPost = (userId, postId, token) => {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ userId, postId }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const postComment = (userId, postId, token, comment) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/post/comment`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, postId, comment }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const deleteComment = (userId, postId, token, comment) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/post/uncomment`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userId, postId, comment }),
   })
     .then((response) => response.json())
     .catch((error) => console.log(error));

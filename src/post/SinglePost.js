@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { getJwt } from "../auth";
 import { deletePost, getPost } from "./apiPost";
+import Comment from "./Comment";
 import LikeButton from "./LikeButton";
 
 class SinglePost extends Component {
@@ -9,11 +10,16 @@ class SinglePost extends Component {
     post: "",
     error: "",
     likes: "",
+    comments: [],
     amILiking: false,
     loading: true,
     redirectToHome: false,
     redirectToLogin: false,
     redirectToProfile: false,
+  };
+
+  updateComments = (comments) => {
+    this.setState({ comments });
   };
 
   checkLike = () => {
@@ -26,9 +32,9 @@ class SinglePost extends Component {
   handleLikeButton = (api) => {
     if (!getJwt()) this.setState({ redirectToLogin: true });
     else {
-      const jwt = getJwt();
+      const { token, user } = getJwt();
       const postId = this.props.match.params.postId;
-      api(jwt.user._id, postId, jwt.token).then((data) => {
+      api(user._id, postId, token).then((data) => {
         if (data.error) this.setState({ error: data.error });
         else {
           this.setState({
@@ -48,6 +54,7 @@ class SinglePost extends Component {
         this.setState({
           post: data,
           likes: data.likes,
+          comments: data.comments,
           loading: false,
         });
         this.setState({
@@ -81,6 +88,7 @@ class SinglePost extends Component {
       loading,
       amILiking,
       likes,
+      comments,
       redirectToHome,
       redirectToLogin,
       redirectToProfile,
@@ -104,6 +112,8 @@ class SinglePost extends Component {
         <h2 className="mt-5 mb-5">{title}</h2>
         <hr />
         <br />
+
+        {/* Post Contents */}
         {loading ? (
           <div className="jumbotron text-center">
             <h2>Loading...</h2>
@@ -125,6 +135,8 @@ class SinglePost extends Component {
               Posted by <Link to={`/user/${posterId}`}>{posterName} </Link>
               on {new Date(created).toDateString()}
             </p>
+
+            {/* All Buttons */}
             <div>
               <div>
                 <LikeButton
@@ -162,6 +174,13 @@ class SinglePost extends Component {
             </div>
           </div>
         )}
+
+        {/* Comments */}
+        <Comment
+          comments={comments}
+          postId={_id}
+          updateComments={this.updateComments}
+        />
       </div>
     );
   }
