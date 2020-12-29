@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { authenticate } from "../auth";
 import { login } from "./apiUser";
 
@@ -54,7 +54,7 @@ class Login extends Component {
         <label className="text-muted">Password</label>
         <input
           onChange={this.handleChange("password")}
-          type="text"
+          type="password"
           value={password}
           className="form-control"
         ></input>
@@ -86,6 +86,11 @@ class Login extends Component {
         </div>
 
         {this.loginForm(email, password)}
+        <p>
+          <Link to="/forgot-password" className="text-danger">
+            Forgot Password?
+          </Link>
+        </p>
       </div>
     );
   }

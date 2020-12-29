@@ -28,3 +28,29 @@ export const updateJwt = (user, next) => {
   }
   next();
 };
+
+export const sendPasswordResetLink = (email) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/forgot-password`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const resetPassword = (newPassword, resetPasswordLink) => {
+  return fetch(`${process.env.REACT_APP_API_URL}/reset-password`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ newPassword, resetPasswordLink }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};

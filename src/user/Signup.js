@@ -91,7 +91,6 @@ class Signup extends Component {
   render() {
     const { name, email, password, error, redirect } = this.state;
     if (redirect) {
-      // return <Redirect to="/signup/success" />;
       return <Redirect to="/" />;
     }
     return (

@@ -12,6 +12,8 @@ import PrivateRoute from "./auth/PrivateRoute";
 import FindPeople from "./user/FindPeople";
 import SinglePost from "./post/SinglePost";
 import EditPost from "./post/EditPost";
+import ForgotPassword from "./user/ForgotPassword";
+import ResetPassword from "./user/ResetPassword";
 
 export const MainRouter = () => (
   <div>
@@ -22,6 +24,12 @@ export const MainRouter = () => (
       <Route exact path="/signup" component={Signup}></Route>
       <Route exact path="/login" component={Login}></Route>
       <PrivateRoute exact path="/findpeople" component={FindPeople} />
+      <Route exact path="/forgot-password" component={ForgotPassword}></Route>
+      <Route
+        exact
+        path="/reset-password/:resetPasswordToken"
+        component={ResetPassword}
+      ></Route>
 
       {/* User */}
       <Route exact path="/users" component={Users}></Route>
