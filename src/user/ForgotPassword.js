@@ -8,28 +8,13 @@ class ForgotPassword extends Component {
     error: "",
   };
 
-  isValid = () => {
-    const { email } = this.state;
-    if (email.length == 0) {
-      this.setState({ error: "Type your email address." });
-      return false;
-    }
-    if (!/.+\@.+\..+/.test(email)) {
-      this.setState({ error: "Invalid email address." });
-      return false;
-    }
-    return true;
-  };
-
   handleSubmit = (event) => {
     event.preventDefault();
     this.setState({ message: "", error: "" });
-    if (this.isValid()) {
-      sendPasswordResetLink(this.state.email).then((data) => {
-        if (data.error) this.setState({ error: data.error });
-        else this.setState({ message: data.message });
-      });
-    }
+    sendPasswordResetLink(this.state.email).then((data) => {
+      if (data.error) this.setState({ error: data.error });
+      else this.setState({ message: data.message });
+    });
   };
 
   render() {

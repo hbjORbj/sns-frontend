@@ -8,37 +8,18 @@ class ResetPassword extends Component {
     message: "",
   };
 
-  isValid = () => {
-    const { newPassword } = this.state;
-    if (newPassword.length == 0) {
-      this.setState({ error: "Type your new password." });
-      return false;
-    }
-    if (newPassword.length < 6) {
-      this.setState({ error: "Password must contain at least 6 characters." });
-      return false;
-    }
-    if (!/\d/.test(newPassword)) {
-      this.setState({ error: "Password must contain one or more numbers." });
-      return false;
-    }
-    return true;
-  };
-
   resetPassword = (event) => {
     event.preventDefault();
     this.setState({ message: "", error: "" });
     const { newPassword } = this.state;
     const resetPasswordLink = this.props.match.params.resetPasswordToken;
-    if (this.isValid()) {
-      resetPassword(newPassword, resetPasswordLink).then((data) => {
-        if (data.error) {
-          this.setState({ error: data.error });
-        } else {
-          this.setState({ message: data.message, newPassword: "" });
-        }
-      });
-    }
+    resetPassword(newPassword, resetPasswordLink).then((data) => {
+      if (data.error) {
+        this.setState({ error: data.error });
+      } else {
+        this.setState({ message: data.message, newPassword: "" });
+      }
+    });
   };
 
   render() {
