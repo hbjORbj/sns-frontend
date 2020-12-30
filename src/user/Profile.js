@@ -14,6 +14,7 @@ class Profile extends Component {
     name: "",
     email: "",
     created: "",
+    photo: "",
     following: [],
     followers: [],
     posts: [],
@@ -67,6 +68,7 @@ class Profile extends Component {
           following: data.following,
           followers: data.followers,
           about: data.about,
+          photo: data.photo,
           loading: false,
         });
         this.setState({ amIFollowing: this.checkFollow() });
@@ -97,11 +99,14 @@ class Profile extends Component {
       about,
       loading,
       posts,
+      photo,
       amIFollowing,
       following,
       followers,
     } = this.state;
-    const photoUrl = `${process.env.REACT_APP_API_URL}/user/photo/${_id}`;
+    const photoUrl = photo
+      ? `${process.env.REACT_APP_API_URL}/user/photo/${_id}`
+      : DefaultAvatar;
     return (
       <div className="container">
         <h2 className="mt-5 mb-5">Profile</h2>
@@ -121,7 +126,6 @@ class Profile extends Component {
                   alt={`${name}'s Profile Image`}
                   style={{ width: "auto", height: "250px" }}
                   src={photoUrl}
-                  onError={(i) => (i.target.src = `${DefaultAvatar}`)}
                 />
               </div>
               <div className="col-md-8">
