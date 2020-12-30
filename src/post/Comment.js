@@ -106,7 +106,7 @@ class Comment extends Component {
           <hr />
           {comments.reverse().map((comment, i) => (
             <div key={i}>
-              <div>
+              <div className="row">
                 <Link>
                   <img
                     style={{
@@ -115,33 +115,33 @@ class Comment extends Component {
                       height: "30px",
                       width: "30px",
                     }}
-                    className="float mr-2"
+                    className="ml-3 mr-2"
                     alt={comment.postedBy.name}
                     src={`${process.env.REACT_APP_API_URL}/user/photo/${comment.postedBy._id}`}
                   />
                 </Link>
-                <div>
-                  <p className="lead">{comment.text}</p>
-                  <p className="font-italic mark">
-                    Posted by{" "}
-                    <Link to={`/user/${comment.postedBy._id}`}>
-                      {comment.postedBy.name}
-                    </Link>
-                    on {new Date(comment.created).toDateString()}
-                    <span>
-                      {getJwt().user &&
-                        getJwt().user._id == comment.postedBy._id && (
-                          <span
-                            style={{ cursor: "pointer" }}
-                            className="text-danger float-right mr-1"
-                            onClick={() => this.confirmDeletion(comment)}
-                          >
-                            Delete
-                          </span>
-                        )}
-                    </span>
-                  </p>
-                </div>
+                <p className="lead">{comment.text}</p>
+              </div>
+              <div>
+                <p className="font-italic mark">
+                  Posted by{" "}
+                  <Link to={`/user/${comment.postedBy._id}`}>
+                    {comment.postedBy.name}{" "}
+                  </Link>
+                  on {` ${new Date(comment.created).toDateString()}`}
+                  <span>
+                    {getJwt().user &&
+                      getJwt().user._id == comment.postedBy._id && (
+                        <span
+                          style={{ cursor: "pointer" }}
+                          className="text-danger float-right mr-1"
+                          onClick={() => this.confirmDeletion(comment)}
+                        >
+                          Delete
+                        </span>
+                      )}
+                  </span>
+                </p>
               </div>
             </div>
           ))}
